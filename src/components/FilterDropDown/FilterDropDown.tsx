@@ -20,18 +20,23 @@ const FilterDropDown: React.FC<FilterProps> = ({
 }) => {
   const [filterType, setFilterType] = React.useState("");
 
+  // TODO: Move the filter types value to player props table for multi filtering.
   const handleChange = (event: SelectChangeEvent) => {
     // Capture the filter type value selected.
     const filterTypeSelected = event.target.value;
 
     if (playerInfo.length > 0) {
-      // Filter the player info based on the filter type value selected
-      const filteredPlayerInfo = playerInfo.filter(
-        (player) => player[keyToFilterBy] === filterTypeSelected
-      );
+      if (filterTypeSelected) {
+        // Filter the player info based on the filter type value selected
+        const filteredPlayerInfo = playerInfo.filter(
+          (player) => player[keyToFilterBy] === filterTypeSelected
+        );
 
-      // Update the filtered player info for the table.
-      setFilteredPlayerInfo(filteredPlayerInfo);
+        // Update the filtered player info for the table.
+        setFilteredPlayerInfo(filteredPlayerInfo);
+      } else {
+        setFilteredPlayerInfo(playerInfo);
+      }
     }
 
     // Set the filter type value selected in the filter drop down.

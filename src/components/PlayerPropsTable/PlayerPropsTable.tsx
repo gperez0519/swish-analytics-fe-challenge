@@ -68,7 +68,7 @@ const PlayerPropsTable: React.FC = () => {
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
-              <TableCell>Player Names</TableCell>
+              <TableCell>Player Name</TableCell>
               <TableCell align="right">Team Name</TableCell>
               <TableCell align="right">Team Abbr</TableCell>
               <TableCell align="right">Position</TableCell>
