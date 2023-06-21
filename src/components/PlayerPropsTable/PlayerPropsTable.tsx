@@ -10,6 +10,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
 
 // Mock Data
 import playerProps from "../../mockData/props.json";
@@ -36,6 +38,7 @@ const PlayerPropsTable: React.FC = () => {
     playerName: "",
     teamNickname: "",
   });
+  const [textSearchVal, setTextSearchVal] = React.useState<string>("");
 
   const updatePlayerSuspension = (playerInfo: PlayerPropsType) => {
     // Given the player info in context to the suspension toggle clicked update that player's suspension status
@@ -58,6 +61,11 @@ const PlayerPropsTable: React.FC = () => {
     setFilteredPlayerPropsInfo([...updatedPlayerInfo]);
   };
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const textSearch = e.target.value;
+    setTextSearchVal(textSearch);
+  };
+
   const filterPlayerInfo = React.useCallback((): void => {
     if (playerPropsInfo.length > 0) {
       if (filterType) {
@@ -69,6 +77,7 @@ const PlayerPropsTable: React.FC = () => {
             : false
         );
 
+        // Filter the player info based on the market suspended.
         if (
           filterType.marketSuspended !== null &&
           filterType.marketSuspended !== ""
@@ -89,17 +98,30 @@ const PlayerPropsTable: React.FC = () => {
           });
         }
 
+        // Filter the player info based on the search text entered.
+        if (textSearchVal) {
+          filteredPlayerInfo = filteredPlayerInfo.filter(
+            (player) =>
+              player.playerName
+                .toLowerCase()
+                .includes(textSearchVal.toLowerCase()) ||
+              player.teamNickname
+                .toLowerCase()
+                .includes(textSearchVal.toLowerCase())
+          );
+        }
+
         // Update the filtered player info for the table.
         setFilteredPlayerPropsInfo([...filteredPlayerInfo]);
       } else {
         setFilteredPlayerPropsInfo([...playerPropsInfo]);
       }
     }
-  }, [filterType]);
+  }, [filterType, textSearchVal]);
 
   React.useEffect(() => {
     filterPlayerInfo();
-  }, [filterType, filterPlayerInfo, playerPropsInfo]);
+  }, [filterType, filterPlayerInfo, playerPropsInfo, textSearchVal]);
 
   return (
     <Container maxWidth="lg" className="mainPlayerTable">
@@ -126,6 +148,22 @@ const PlayerPropsTable: React.FC = () => {
           filterPlayerInfo={filterPlayerInfo}
           setFilterType={setFilterType}
         />
+        <Box
+          component="form"
+          sx={{
+            "& > :not(style)": { m: 1, width: "25ch" },
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            id="mainSearchFilter"
+            label="Search..."
+            variant="outlined"
+            value={textSearchVal}
+            onChange={handleSearch}
+          />
+        </Box>
       </div>
       <TableContainer component={Paper} className="playerPropsTable">
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
