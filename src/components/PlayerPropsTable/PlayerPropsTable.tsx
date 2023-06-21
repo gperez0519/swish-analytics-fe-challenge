@@ -48,7 +48,7 @@ const PlayerPropsTable: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" className="mainPlayerTable">
       <div className="filterContainer">
         <h2>Filters:</h2>
         <FilterDropDown
