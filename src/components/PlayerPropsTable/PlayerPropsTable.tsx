@@ -25,6 +25,7 @@ import { FilterPlayerModel, PlayerPropsType } from "../../types/Types";
 
 // Styles
 import "./PlayerPropsTable.css";
+import { updatePropsBasedOnMarketRules } from "../../utils/utils";
 
 const PlayerPropsTable: React.FC = () => {
   const [playerPropsInfo, setPlayerPropsInfo] =
@@ -118,6 +119,18 @@ const PlayerPropsTable: React.FC = () => {
       }
     }
   }, [filterType, textSearchVal]);
+
+  React.useEffect(() => {
+    // Update player props based on market rules upon initial render
+    const playerPropsUpdated = updatePropsBasedOnMarketRules(
+      playerProps,
+      playerAlternates
+    );
+
+    if (playerPropsUpdated.length > 0) {
+      setPlayerPropsInfo(playerPropsUpdated);
+    }
+  }, []);
 
   React.useEffect(() => {
     filterPlayerInfo();

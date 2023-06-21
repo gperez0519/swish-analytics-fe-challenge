@@ -28,6 +28,17 @@ export interface PlayerPropsType {
   line: number;
 }
 
+export interface AltPropsType {
+  playerName: string;
+  playerId: number;
+  statType: string;
+  statTypeId: number;
+  line: number;
+  underOdds: number;
+  overOdds: number;
+  pushOdds: number;
+}
+
 export type FilterByKeys =
   | "position"
   | "statType"
