@@ -43,12 +43,10 @@ const FilterDropDown: React.FC<FilterProps> = ({
   return (
     <div>
       <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">
-          {labelName}
-        </InputLabel>
+        <InputLabel id="filterPlayerLabel">{labelName}</InputLabel>
         <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
+          labelId="filterPlayerSelectLabel"
+          id="filterPlayerSelect"
           value={filterType}
           onChange={handleChange}
           label={labelName}
