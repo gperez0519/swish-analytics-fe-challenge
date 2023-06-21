@@ -4,7 +4,6 @@ export interface FilterProps {
   labelName: string;
   keyToFilterBy: FilterByKeys;
   playerInfo: PlayerPropsType[];
-  filterPlayerInfo: () => void;
   setFilterType: React.Dispatch<React.SetStateAction<FilterPlayerModel>>;
 }
 

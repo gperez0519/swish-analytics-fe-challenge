@@ -16,7 +16,6 @@ const FilterDropDown: React.FC<FilterProps> = ({
   labelName,
   keyToFilterBy,
   playerInfo,
-  filterPlayerInfo,
   setFilterType,
 }) => {
   const [selectedValue, setSelectedValue] = React.useState<string>("");

@@ -131,21 +131,18 @@ const PlayerPropsTable: React.FC = () => {
           labelName="Position"
           keyToFilterBy="position"
           playerInfo={playerPropsInfo}
-          filterPlayerInfo={filterPlayerInfo}
           setFilterType={setFilterType}
         />
         <FilterDropDown
           labelName="Stat Type"
           keyToFilterBy="statType"
           playerInfo={playerPropsInfo}
-          filterPlayerInfo={filterPlayerInfo}
           setFilterType={setFilterType}
         />
         <FilterDropDown
           labelName="Market Suspended"
           keyToFilterBy="marketSuspended"
           playerInfo={playerPropsInfo}
-          filterPlayerInfo={filterPlayerInfo}
           setFilterType={setFilterType}
         />
         <Box
