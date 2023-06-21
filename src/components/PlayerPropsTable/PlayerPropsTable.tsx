@@ -19,18 +19,27 @@ import playerAlternates from "../../mockData/alternates.json";
 import FilterDropDown from "../FilterDropDown/FilterDropDown";
 
 // Types
-import { PlayerPropsType } from "../../types/Types";
+import { FilterPlayerModel, PlayerPropsType } from "../../types/Types";
 
 // Styles
 import "./PlayerPropsTable.css";
 
 const PlayerPropsTable: React.FC = () => {
-  const [filteredPlayerInfo, setFilteredPlayerInfo] =
+  const [playerPropsInfo, setPlayerPropsInfo] =
     React.useState<PlayerPropsType[]>(playerProps);
+  const [filteredPlayerPropsInfo, setFilteredPlayerPropsInfo] =
+    React.useState<PlayerPropsType[]>(playerProps);
+  const [filterType, setFilterType] = React.useState<FilterPlayerModel>({
+    position: "",
+    statType: "",
+    marketSuspended: "",
+    playerName: "",
+    teamNickname: "",
+  });
 
   const updatePlayerSuspension = (playerInfo: PlayerPropsType) => {
     // Given the player info in context to the suspension toggle clicked update that player's suspension status
-    const updatedPlayerInfo = filteredPlayerInfo.map((player) => {
+    const updatedPlayerInfo = filteredPlayerPropsInfo.map((player) => {
       if (
         player.playerId === playerInfo.playerId &&
         player.statTypeId === playerInfo.statTypeId
@@ -44,8 +53,53 @@ const PlayerPropsTable: React.FC = () => {
       }
     });
 
-    setFilteredPlayerInfo(updatedPlayerInfo);
+    // Filter the player if the market suspension changes.
+    filterPlayerInfo();
+    setFilteredPlayerPropsInfo([...updatedPlayerInfo]);
   };
+
+  const filterPlayerInfo = React.useCallback((): void => {
+    if (playerPropsInfo.length > 0) {
+      if (filterType) {
+        // Filter the player info based on the filter type value selected
+        let filteredPlayerInfo = playerPropsInfo.filter((player) =>
+          player.position.includes(filterType.position) &&
+          player.statType.includes(filterType.statType)
+            ? true
+            : false
+        );
+
+        if (
+          filterType.marketSuspended !== null &&
+          filterType.marketSuspended !== ""
+        ) {
+          filteredPlayerInfo = filteredPlayerInfo.filter((player) => {
+            if (
+              filterType.marketSuspended === null ||
+              filterType.marketSuspended === ""
+            ) {
+              return false;
+            } else {
+              if (player.marketSuspended === filterType.marketSuspended) {
+                return true;
+              } else {
+                return false;
+              }
+            }
+          });
+        }
+
+        // Update the filtered player info for the table.
+        setFilteredPlayerPropsInfo([...filteredPlayerInfo]);
+      } else {
+        setFilteredPlayerPropsInfo([...playerPropsInfo]);
+      }
+    }
+  }, [filterType]);
+
+  React.useEffect(() => {
+    filterPlayerInfo();
+  }, [filterType, filterPlayerInfo, playerPropsInfo]);
 
   return (
     <Container maxWidth="lg" className="mainPlayerTable">
@@ -54,14 +108,23 @@ const PlayerPropsTable: React.FC = () => {
         <FilterDropDown
           labelName="Position"
           keyToFilterBy="position"
-          playerInfo={playerProps}
-          setFilteredPlayerInfo={setFilteredPlayerInfo}
+          playerInfo={playerPropsInfo}
+          filterPlayerInfo={filterPlayerInfo}
+          setFilterType={setFilterType}
         />
         <FilterDropDown
           labelName="Stat Type"
           keyToFilterBy="statType"
-          playerInfo={playerProps}
-          setFilteredPlayerInfo={setFilteredPlayerInfo}
+          playerInfo={playerPropsInfo}
+          filterPlayerInfo={filterPlayerInfo}
+          setFilterType={setFilterType}
+        />
+        <FilterDropDown
+          labelName="Market Suspended"
+          keyToFilterBy="marketSuspended"
+          playerInfo={playerPropsInfo}
+          filterPlayerInfo={filterPlayerInfo}
+          setFilterType={setFilterType}
         />
       </div>
       <TableContainer component={Paper} className="playerPropsTable">
@@ -80,8 +143,8 @@ const PlayerPropsTable: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredPlayerInfo &&
-              filteredPlayerInfo.map((player, i) => {
+            {filteredPlayerPropsInfo.length > 0 &&
+              filteredPlayerPropsInfo.map((player, i) => {
                 // For each player prop filter the player alt by the playerId and statTypeId
                 const playerAltFiltered = playerAlternates.filter(
                   (playerAlt) =>
