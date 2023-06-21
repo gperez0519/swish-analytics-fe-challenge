@@ -9,6 +9,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
 
 // Mock Data
 import playerProps from "../../mockData/props.json";
@@ -26,6 +27,25 @@ import "./PlayerPropsTable.css";
 const PlayerPropsTable: React.FC = () => {
   const [filteredPlayerInfo, setFilteredPlayerInfo] =
     React.useState<PlayerPropsType[]>(playerProps);
+
+  const updatePlayerSuspension = (playerInfo: PlayerPropsType) => {
+    // Given the player info in context to the suspension toggle clicked update that player's suspension status
+    const updatedPlayerInfo = filteredPlayerInfo.map((player) => {
+      if (
+        player.playerId === playerInfo.playerId &&
+        player.statTypeId === playerInfo.statTypeId
+      ) {
+        return {
+          ...player,
+          marketSuspended: player.marketSuspended === 0 ? 1 : 0,
+        };
+      } else {
+        return player;
+      }
+    });
+
+    setFilteredPlayerInfo(updatedPlayerInfo);
+  };
 
   return (
     <Container maxWidth="lg">
@@ -54,7 +74,7 @@ const PlayerPropsTable: React.FC = () => {
               <TableCell align="right">Position</TableCell>
               <TableCell align="right">Stat Type</TableCell>
               <TableCell align="right">Line</TableCell>
-              <TableCell align="right">Market Suspended</TableCell>
+              <TableCell align="center">Market Suspended</TableCell>
               <TableCell align="right">Low</TableCell>
               <TableCell align="right">High</TableCell>
             </TableRow>
@@ -101,14 +121,38 @@ const PlayerPropsTable: React.FC = () => {
                     <TableCell align="right">{player.statType}</TableCell>
                     <TableCell align="right">{player.line}</TableCell>
                     <TableCell
-                      align="right"
+                      align="center"
                       className={`suspensionCell ${
                         player.marketSuspended === 1
                           ? "suspendedMarket"
                           : "activeMarket"
                       }`}
                     >
-                      {player.marketSuspended === 1 ? "Suspended" : "Active"}
+                      {player.marketSuspended === 1 ? (
+                        <div>
+                          <span className="marketSuspStatus">Suspended</span>
+                          <Button
+                            size="small"
+                            variant="contained"
+                            color="success"
+                            onClick={() => updatePlayerSuspension(player)}
+                          >
+                            Unsuspend
+                          </Button>
+                        </div>
+                      ) : (
+                        <div>
+                          <span className="marketSuspStatus">Unsuspended</span>
+                          <Button
+                            size="small"
+                            variant="contained"
+                            color="error"
+                            onClick={() => updatePlayerSuspension(player)}
+                          >
+                            Suspend
+                          </Button>
+                        </div>
+                      )}
                     </TableCell>
                     <TableCell align="right">{playerLow}</TableCell>
                     <TableCell align="right">{playerHigh}</TableCell>

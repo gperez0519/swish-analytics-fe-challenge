@@ -1,9 +1,15 @@
 import * as React from "react";
+
+// Material UI components
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+
+// Types
 import { FilterProps } from "../../types/Types";
+
+// Utils
 import _ from "lodash";
 
 const FilterDropDown: React.FC<FilterProps> = ({
@@ -37,7 +43,6 @@ const FilterDropDown: React.FC<FilterProps> = ({
   if (playerInfo.length > 0) {
     playerUniqueFilterTypes = _.uniq(_.map(playerInfo, keyToFilterBy));
     playerUniqueFilterTypes.sort();
-    console.log(`Player Unique ${keyToFilterBy}:`, playerUniqueFilterTypes);
   }
 
   return (
