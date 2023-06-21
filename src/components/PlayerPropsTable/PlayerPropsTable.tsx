@@ -25,7 +25,10 @@ import { FilterPlayerModel, PlayerPropsType } from "../../types/Types";
 
 // Styles
 import "./PlayerPropsTable.css";
-import { updatePropsBasedOnMarketRules } from "../../utils/utils";
+import {
+  updatePropsBasedOnMarketRules,
+  filterPlayerInfo,
+} from "../../utils/utils";
 
 const PlayerPropsTable: React.FC = () => {
   const [playerPropsInfo, setPlayerPropsInfo] =
@@ -40,6 +43,11 @@ const PlayerPropsTable: React.FC = () => {
     teamNickname: "",
   });
   const [textSearchVal, setTextSearchVal] = React.useState<string>("");
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const textSearch = e.target.value;
+    setTextSearchVal(textSearch);
+  };
 
   const updatePlayerSuspension = (playerInfo: PlayerPropsType) => {
     // Given the player info in context to the suspension toggle clicked update that player's suspension status
@@ -58,67 +66,14 @@ const PlayerPropsTable: React.FC = () => {
     });
 
     // Filter the player if the market suspension changes.
-    filterPlayerInfo();
+    filterPlayerInfo(
+      filteredPlayerPropsInfo,
+      filterType,
+      textSearchVal,
+      setFilteredPlayerPropsInfo
+    );
     setFilteredPlayerPropsInfo([...updatedPlayerInfo]);
   };
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const textSearch = e.target.value;
-    setTextSearchVal(textSearch);
-  };
-
-  const filterPlayerInfo = React.useCallback((): void => {
-    if (playerPropsInfo.length > 0) {
-      if (filterType) {
-        // Filter the player info based on the filter type value selected
-        let filteredPlayerInfo = playerPropsInfo.filter((player) =>
-          player.position.includes(filterType.position) &&
-          player.statType.includes(filterType.statType)
-            ? true
-            : false
-        );
-
-        // Filter the player info based on the market suspended.
-        if (
-          filterType.marketSuspended !== null &&
-          filterType.marketSuspended !== ""
-        ) {
-          filteredPlayerInfo = filteredPlayerInfo.filter((player) => {
-            if (
-              filterType.marketSuspended === null ||
-              filterType.marketSuspended === ""
-            ) {
-              return false;
-            } else {
-              if (player.marketSuspended === filterType.marketSuspended) {
-                return true;
-              } else {
-                return false;
-              }
-            }
-          });
-        }
-
-        // Filter the player info based on the search text entered.
-        if (textSearchVal) {
-          filteredPlayerInfo = filteredPlayerInfo.filter(
-            (player) =>
-              player.playerName
-                .toLowerCase()
-                .includes(textSearchVal.toLowerCase()) ||
-              player.teamNickname
-                .toLowerCase()
-                .includes(textSearchVal.toLowerCase())
-          );
-        }
-
-        // Update the filtered player info for the table.
-        setFilteredPlayerPropsInfo([...filteredPlayerInfo]);
-      } else {
-        setFilteredPlayerPropsInfo([...playerPropsInfo]);
-      }
-    }
-  }, [filterType, textSearchVal]);
 
   React.useEffect(() => {
     // Update player props based on market rules upon initial render
@@ -133,7 +88,12 @@ const PlayerPropsTable: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
-    filterPlayerInfo();
+    filterPlayerInfo(
+      playerPropsInfo,
+      filterType,
+      textSearchVal,
+      setFilteredPlayerPropsInfo
+    );
   }, [filterType, filterPlayerInfo, playerPropsInfo, textSearchVal]);
 
   return (

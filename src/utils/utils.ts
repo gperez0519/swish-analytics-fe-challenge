@@ -1,4 +1,8 @@
-import { PlayerPropsType, AltPropsType } from "../types/Types";
+import {
+  PlayerPropsType,
+  AltPropsType,
+  FilterPlayerModel,
+} from "../types/Types";
 
 export const updatePropsBasedOnMarketRules = (
   playerProps: PlayerPropsType[],
@@ -36,4 +40,64 @@ export const updatePropsBasedOnMarketRules = (
   });
 
   return [...playerPropsUpdated];
+};
+
+export const filterPlayerInfo = (
+  playerPropsInfo: PlayerPropsType[],
+  filterType: FilterPlayerModel,
+  textSearchVal: string,
+  setFilteredPlayerPropsInfo: React.Dispatch<
+    React.SetStateAction<PlayerPropsType[]>
+  >
+): void => {
+  if (playerPropsInfo.length > 0) {
+    if (filterType) {
+      // Filter the player info based on the filter type value selected
+      let filteredPlayerInfo = playerPropsInfo.filter((player) =>
+        player.position.includes(filterType.position) &&
+        player.statType.includes(filterType.statType)
+          ? true
+          : false
+      );
+
+      // Filter the player info based on the market suspended.
+      if (
+        filterType.marketSuspended !== null &&
+        filterType.marketSuspended !== ""
+      ) {
+        filteredPlayerInfo = filteredPlayerInfo.filter((player) => {
+          if (
+            filterType.marketSuspended === null ||
+            filterType.marketSuspended === ""
+          ) {
+            return false;
+          } else {
+            if (player.marketSuspended === filterType.marketSuspended) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        });
+      }
+
+      // Filter the player info based on the search text entered.
+      if (textSearchVal) {
+        filteredPlayerInfo = filteredPlayerInfo.filter(
+          (player) =>
+            player.playerName
+              .toLowerCase()
+              .includes(textSearchVal.toLowerCase()) ||
+            player.teamNickname
+              .toLowerCase()
+              .includes(textSearchVal.toLowerCase())
+        );
+      }
+
+      // Update the filtered player info for the table.
+      setFilteredPlayerPropsInfo([...filteredPlayerInfo]);
+    } else {
+      setFilteredPlayerPropsInfo([...playerPropsInfo]);
+    }
+  }
 };
