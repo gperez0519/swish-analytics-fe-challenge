@@ -1,0 +1,19 @@
+.playerPropsTable {
+  margin: 1rem 0;
+}
+
+.filterContainer {
+  display: flex;
+}
+
+.suspensionCell {
+  font-weight: 700 !important;
+}
+
+.activeMarket {
+  color: #009688 !important;
+}
+
+.suspendedMarket {
+  color: #f44336 !important;
+}
