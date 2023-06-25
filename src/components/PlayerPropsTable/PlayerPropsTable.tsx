@@ -65,23 +65,7 @@ const PlayerPropsTable: React.FC = () => {
     });
 
     setPlayerPropsInfo([...updateOriginalPlayerInfo]);
-
-    // Given the player info in context to the suspension toggle clicked update that player's suspension status
-    const updatedFilterPlayerInfo = filteredPlayerPropsInfo.map((player) => {
-      if (
-        player.playerId === playerInfo.playerId &&
-        player.statTypeId === playerInfo.statTypeId
-      ) {
-        return {
-          ...player,
-          marketSuspended: player.marketSuspended === 0 ? 1 : 0,
-        };
-      } else {
-        return player;
-      }
-    });
-
-    setFilteredPlayerPropsInfo([...updatedFilterPlayerInfo]);
+    setFilteredPlayerPropsInfo([...updateOriginalPlayerInfo]);
   };
 
   React.useEffect(() => {
