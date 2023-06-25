@@ -50,8 +50,24 @@ const PlayerPropsTable: React.FC = () => {
   };
 
   const updatePlayerSuspension = (playerInfo: PlayerPropsType) => {
+    // Update original player info based on new market toggle state
+    const updateOriginalPlayerInfo = playerPropsInfo.map((player) => {
+      if (
+        player.playerId === playerInfo.playerId &&
+        player.statTypeId === playerInfo.statTypeId
+      ) {
+        return {
+          ...player,
+          marketSuspended: player.marketSuspended === 0 ? 1 : 0,
+        };
+      }
+      return { ...player };
+    });
+
+    setPlayerPropsInfo([...updateOriginalPlayerInfo]);
+
     // Given the player info in context to the suspension toggle clicked update that player's suspension status
-    const updatedPlayerInfo = filteredPlayerPropsInfo.map((player) => {
+    const updatedFilterPlayerInfo = filteredPlayerPropsInfo.map((player) => {
       if (
         player.playerId === playerInfo.playerId &&
         player.statTypeId === playerInfo.statTypeId
@@ -65,14 +81,7 @@ const PlayerPropsTable: React.FC = () => {
       }
     });
 
-    // Filter the player if the market suspension changes.
-    filterPlayerInfo(
-      filteredPlayerPropsInfo,
-      filterType,
-      textSearchVal,
-      setFilteredPlayerPropsInfo
-    );
-    setFilteredPlayerPropsInfo([...updatedPlayerInfo]);
+    setFilteredPlayerPropsInfo([...updatedFilterPlayerInfo]);
   };
 
   React.useEffect(() => {
