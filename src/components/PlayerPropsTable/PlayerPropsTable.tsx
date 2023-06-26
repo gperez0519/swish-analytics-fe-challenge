@@ -27,6 +27,7 @@ import { FilterPlayerModel, PlayerPropsType } from "../../types/Types";
 import "./PlayerPropsTable.css";
 import {
   updatePropsBasedOnMarketRules,
+  updatePlayerSuspension,
   filterPlayerInfo,
 } from "../../utils/utils";
 
@@ -47,25 +48,6 @@ const PlayerPropsTable: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const textSearch = e.target.value;
     setTextSearchVal(textSearch);
-  };
-
-  const updatePlayerSuspension = (playerInfo: PlayerPropsType) => {
-    // Update original player info based on new market toggle state
-    const updateOriginalPlayerInfo = playerPropsInfo.map((player) => {
-      if (
-        player.playerId === playerInfo.playerId &&
-        player.statTypeId === playerInfo.statTypeId
-      ) {
-        return {
-          ...player,
-          marketSuspended: player.marketSuspended === 0 ? 1 : 0,
-        };
-      }
-      return { ...player };
-    });
-
-    setPlayerPropsInfo([...updateOriginalPlayerInfo]);
-    setFilteredPlayerPropsInfo([...updateOriginalPlayerInfo]);
   };
 
   React.useEffect(() => {
@@ -199,7 +181,21 @@ const PlayerPropsTable: React.FC = () => {
                             size="small"
                             variant="contained"
                             color="success"
-                            onClick={() => updatePlayerSuspension(player)}
+                            onClick={() => {
+                              // Update original player market suspension status
+                              updatePlayerSuspension(
+                                player,
+                                playerPropsInfo,
+                                setPlayerPropsInfo
+                              );
+
+                              // Update filtered player market suspension status
+                              updatePlayerSuspension(
+                                player,
+                                filteredPlayerPropsInfo,
+                                setFilteredPlayerPropsInfo
+                              );
+                            }}
                           >
                             Unsuspend
                           </Button>
@@ -211,7 +207,21 @@ const PlayerPropsTable: React.FC = () => {
                             size="small"
                             variant="contained"
                             color="error"
-                            onClick={() => updatePlayerSuspension(player)}
+                            onClick={() => {
+                              // Update original player market suspension status
+                              updatePlayerSuspension(
+                                player,
+                                playerPropsInfo,
+                                setPlayerPropsInfo
+                              );
+
+                              // Update filtered player market suspension status
+                              updatePlayerSuspension(
+                                player,
+                                filteredPlayerPropsInfo,
+                                setFilteredPlayerPropsInfo
+                              );
+                            }}
                           >
                             Suspend
                           </Button>

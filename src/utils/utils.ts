@@ -2,6 +2,7 @@ import {
   PlayerPropsType,
   AltPropsType,
   FilterPlayerModel,
+  UpdatePlayerSuspensionProps,
 } from "../types/Types";
 
 export const updatePropsBasedOnMarketRules = (
@@ -40,6 +41,28 @@ export const updatePropsBasedOnMarketRules = (
   });
 
   return [...playerPropsUpdated];
+};
+
+export const updatePlayerSuspension: UpdatePlayerSuspensionProps = (
+  contextPlayerInfo,
+  fullPlayerInfo,
+  setFullPlayerInfo
+) => {
+  // Update original player info based on new market toggle state
+  const updateFullPlayerInfo = fullPlayerInfo.map((player) => {
+    if (
+      player.playerId === contextPlayerInfo.playerId &&
+      player.statTypeId === contextPlayerInfo.statTypeId
+    ) {
+      return {
+        ...player,
+        marketSuspended: player.marketSuspended === 0 ? 1 : 0,
+      };
+    }
+    return { ...player };
+  });
+
+  setFullPlayerInfo([...updateFullPlayerInfo]);
 };
 
 export const filterPlayerInfo = (

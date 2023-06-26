@@ -45,4 +45,11 @@ export type FilterByKeys =
   | "marketSuspended"
   | "playerName"
   | "teamNickname";
+
+export type UpdatePlayerSuspensionProps = (
+  contextPlayerInfo: PlayerPropsType,
+  fullPlayerInfo: PlayerPropsType[],
+  setFullPlayerInfo: (value: React.SetStateAction<PlayerPropsType[]>) => void
+) => void;
+
 type marketSuspendedType = 0 | 1 | "";
