@@ -3,8 +3,13 @@ import React from "react";
 export interface FilterProps {
   labelName: string;
   keyToFilterBy: FilterByKeys;
-  playerInfo: PlayerPropsType[];
+  filterOptions: Option[];
   setFilterType: React.Dispatch<React.SetStateAction<FilterPlayerModel>>;
+}
+
+export interface Option {
+  label: string;
+  value: string | number;
 }
 
 export interface FilterPlayerModel {

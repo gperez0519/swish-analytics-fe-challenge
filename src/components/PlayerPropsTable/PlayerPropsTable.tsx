@@ -1,14 +1,6 @@
 import * as React from "react";
 
 // Material UI Components
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
@@ -21,7 +13,7 @@ import playerAlternates from "../../mockData/alternates.json";
 import FilterDropDown from "../FilterDropDown/FilterDropDown";
 
 // Types
-import { FilterPlayerModel, PlayerPropsType } from "../../types/Types";
+import { FilterPlayerModel, Option, PlayerPropsType } from "../../types/Types";
 
 // Styles
 import "./PlayerPropsTable.css";
@@ -30,6 +22,8 @@ import {
   updatePlayerSuspension,
   filterPlayerInfo,
 } from "../../utils/utils";
+
+import _ from "lodash";
 
 const PlayerPropsTable: React.FC = () => {
   const [playerPropsInfo, setPlayerPropsInfo] =
@@ -49,6 +43,21 @@ const PlayerPropsTable: React.FC = () => {
     const textSearch = e.target.value;
     setTextSearchVal(textSearch);
   };
+
+  const togglePlayerSuspension = React.useCallback(
+    (player: PlayerPropsType) => {
+      // Update original player market suspension status
+      updatePlayerSuspension(player, playerPropsInfo, setPlayerPropsInfo);
+
+      // Update filtered player market suspension status
+      updatePlayerSuspension(
+        player,
+        filteredPlayerPropsInfo,
+        setFilteredPlayerPropsInfo
+      );
+    },
+    [playerPropsInfo, filteredPlayerPropsInfo]
+  );
 
   React.useEffect(() => {
     // Update player props based on market rules upon initial render
@@ -71,26 +80,46 @@ const PlayerPropsTable: React.FC = () => {
     );
   }, [filterType, filterPlayerInfo, playerPropsInfo, textSearchVal]);
 
+  const positionOptions: Option[] = [
+    { label: "PG", value: "PG" },
+    { label: "SF", value: "SF" },
+    { label: "PF", value: "PF" },
+    { label: "SG", value: "SG" },
+    { label: "C", value: "C" },
+  ];
+
+  const statTypeOptions: Option[] = [
+    { label: "assists", value: "assists" },
+    { label: "rebounds", value: "rebounds" },
+    { label: "points", value: "points" },
+    { label: "steals", value: "steals" },
+  ];
+
+  const marketSuspendOptions: Option[] = [
+    { label: "Yes", value: 1 },
+    { label: "No", value: 0 },
+  ];
+
   return (
-    <Container maxWidth="lg" className="mainPlayerTable">
+    <div className="mainPlayerTable">
       <div className="filterContainer">
         <h2>Filters:</h2>
         <FilterDropDown
           labelName="Position"
           keyToFilterBy="position"
-          playerInfo={playerPropsInfo}
+          filterOptions={positionOptions}
           setFilterType={setFilterType}
         />
         <FilterDropDown
           labelName="Stat Type"
           keyToFilterBy="statType"
-          playerInfo={playerPropsInfo}
+          filterOptions={statTypeOptions}
           setFilterType={setFilterType}
         />
         <FilterDropDown
           labelName="Market Suspended"
           keyToFilterBy="marketSuspended"
-          playerInfo={playerPropsInfo}
+          filterOptions={marketSuspendOptions}
           setFilterType={setFilterType}
         />
         <Box
@@ -110,22 +139,22 @@ const PlayerPropsTable: React.FC = () => {
           />
         </Box>
       </div>
-      <TableContainer component={Paper} className="playerPropsTable">
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Player Name</TableCell>
-              <TableCell align="right">Team Name</TableCell>
-              <TableCell align="right">Team Abbr</TableCell>
-              <TableCell align="right">Position</TableCell>
-              <TableCell align="right">Stat Type</TableCell>
-              <TableCell align="right">Line</TableCell>
-              <TableCell align="center">Market Suspended</TableCell>
-              <TableCell align="right">Low</TableCell>
-              <TableCell align="right">High</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
+      <div className="playerPropsTableContainer">
+        <table className="playerPropsTable">
+          <thead>
+            <tr>
+              <th>Player Name</th>
+              <th align="right">Team Name</th>
+              <th align="right">Team Abbr</th>
+              <th align="right">Position</th>
+              <th align="right">Stat Type</th>
+              <th align="right">Line</th>
+              <th align="center">Market Suspended</th>
+              <th align="right">Low</th>
+              <th align="right">High</th>
+            </tr>
+          </thead>
+          <tbody>
             {filteredPlayerPropsInfo.length > 0 &&
               filteredPlayerPropsInfo.map((player, i) => {
                 // For each player prop filter the player alt by the playerId and statTypeId
@@ -154,19 +183,14 @@ const PlayerPropsTable: React.FC = () => {
                 }
 
                 return (
-                  <TableRow
-                    key={i}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {player.playerName}
-                    </TableCell>
-                    <TableCell align="right">{player.teamNickname}</TableCell>
-                    <TableCell align="right">{player.teamAbbr}</TableCell>
-                    <TableCell align="right">{player.position}</TableCell>
-                    <TableCell align="right">{player.statType}</TableCell>
-                    <TableCell align="right">{player.line}</TableCell>
-                    <TableCell
+                  <tr key={i}>
+                    <td>{player.playerName}</td>
+                    <td align="right">{player.teamNickname}</td>
+                    <td align="right">{player.teamAbbr}</td>
+                    <td align="right">{player.position}</td>
+                    <td align="right">{player.statType}</td>
+                    <td align="right">{player.line}</td>
+                    <td
                       align="center"
                       className={`suspensionCell ${
                         player.marketSuspended === 1
@@ -174,69 +198,28 @@ const PlayerPropsTable: React.FC = () => {
                           : "activeMarket"
                       }`}
                     >
-                      {player.marketSuspended === 1 ? (
-                        <div>
-                          <span className="marketSuspStatus">Suspended</span>
-                          <Button
-                            size="small"
-                            variant="contained"
-                            color="success"
-                            onClick={() => {
-                              // Update original player market suspension status
-                              updatePlayerSuspension(
-                                player,
-                                playerPropsInfo,
-                                setPlayerPropsInfo
-                              );
-
-                              // Update filtered player market suspension status
-                              updatePlayerSuspension(
-                                player,
-                                filteredPlayerPropsInfo,
-                                setFilteredPlayerPropsInfo
-                              );
-                            }}
-                          >
-                            Unsuspend
-                          </Button>
-                        </div>
-                      ) : (
-                        <div>
-                          <span className="marketSuspStatus">Unsuspended</span>
-                          <Button
-                            size="small"
-                            variant="contained"
-                            color="error"
-                            onClick={() => {
-                              // Update original player market suspension status
-                              updatePlayerSuspension(
-                                player,
-                                playerPropsInfo,
-                                setPlayerPropsInfo
-                              );
-
-                              // Update filtered player market suspension status
-                              updatePlayerSuspension(
-                                player,
-                                filteredPlayerPropsInfo,
-                                setFilteredPlayerPropsInfo
-                              );
-                            }}
-                          >
-                            Suspend
-                          </Button>
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell align="right">{playerLow}</TableCell>
-                    <TableCell align="right">{playerHigh}</TableCell>
-                  </TableRow>
+                      <div>
+                        <button
+                          className={`btnMarketSuspend text-white ${
+                            player.marketSuspended === 1 ? "success" : "error"
+                          }`}
+                          onClick={() => togglePlayerSuspension(player)}
+                        >
+                          {player.marketSuspended === 1
+                            ? "Unsuspend"
+                            : "Suspend"}
+                        </button>
+                      </div>
+                    </td>
+                    <td align="right">{playerLow}</td>
+                    <td align="right">{playerHigh}</td>
+                  </tr>
                 );
               })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Container>
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
 

@@ -1,9 +1,24 @@
 .mainPlayerTable {
   margin-top: 1rem;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.playerPropsTableContainer {
+  margin: 1rem 0;
+}
+
+.playerPropsTable td,
+.playerPropsTable th {
+  padding: 0.5rem 1rem;
+  border: 1px solid #eee;
 }
 
 .playerPropsTable {
-  margin: 1rem 0;
+  border: 1px solid #eee;
+  border-spacing: 0px;
+  border-radius: 5px;
+  width: 100%;
 }
 
 .marketSuspensionContainer,
@@ -22,6 +37,30 @@
 .suspendedMarket {
   color: #f44336 !important;
 }
+
+.text-white {
+  color: #fff;
+}
+
+.success {
+  background: #23b944;
+}
+
+.error {
+  background: #c44b13;
+}
+
 .marketSuspStatus {
   margin-right: 1rem;
+  border: 1px solid lightblue;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+}
+
+.btnMarketSuspend {
+  width: 99px;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
 }

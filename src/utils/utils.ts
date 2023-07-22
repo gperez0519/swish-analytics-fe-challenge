@@ -75,33 +75,44 @@ export const filterPlayerInfo = (
 ): void => {
   if (playerPropsInfo.length > 0) {
     if (filterType) {
-      // Filter the player info based on the filter type value selected
-      let filteredPlayerInfo = playerPropsInfo.filter((player) =>
-        player.position.includes(filterType.position) &&
-        player.statType.includes(filterType.statType)
-          ? true
-          : false
-      );
+      let filteredPlayerInfo = playerPropsInfo;
+      console.time("filter player info");
 
-      // Filter the player info based on the market suspended.
       if (
-        filterType.marketSuspended !== null &&
-        filterType.marketSuspended !== ""
+        filterType.marketSuspended ||
+        filterType.playerName ||
+        filterType.position ||
+        filterType.statType ||
+        filterType.teamNickname
       ) {
-        filteredPlayerInfo = filteredPlayerInfo.filter((player) => {
-          if (
-            filterType.marketSuspended === null ||
-            filterType.marketSuspended === ""
-          ) {
-            return false;
-          } else {
-            if (player.marketSuspended === filterType.marketSuspended) {
-              return true;
-            } else {
+        // Filter the player info based on the filter type value selected
+        filteredPlayerInfo = playerPropsInfo.filter((player) =>
+          player.position.includes(filterType.position) &&
+          player.statType.includes(filterType.statType)
+            ? true
+            : false
+        );
+
+        // Filter the player info based on the market suspended.
+        if (
+          filterType.marketSuspended !== null &&
+          filterType.marketSuspended !== ""
+        ) {
+          filteredPlayerInfo = filteredPlayerInfo.filter((player) => {
+            if (
+              filterType.marketSuspended === null ||
+              filterType.marketSuspended === ""
+            ) {
               return false;
+            } else {
+              if (player.marketSuspended === filterType.marketSuspended) {
+                return true;
+              } else {
+                return false;
+              }
             }
-          }
-        });
+          });
+        }
       }
 
       // Filter the player info based on the search text entered.
@@ -119,6 +130,7 @@ export const filterPlayerInfo = (
 
       // Update the filtered player info for the table.
       setFilteredPlayerPropsInfo([...filteredPlayerInfo]);
+      console.timeEnd("filter player info");
     } else {
       setFilteredPlayerPropsInfo([...playerPropsInfo]);
     }
