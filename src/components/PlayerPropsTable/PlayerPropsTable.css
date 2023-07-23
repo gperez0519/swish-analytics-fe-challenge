@@ -46,6 +46,16 @@
   background: #23b944;
 }
 
+.no-results {
+  text-align: center;
+}
+
+.no-results-text {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #d32f2f;
+}
+
 .error {
   background: #c44b13;
 }

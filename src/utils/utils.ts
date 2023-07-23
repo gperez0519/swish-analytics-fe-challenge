@@ -76,7 +76,6 @@ export const filterPlayerInfo = (
   if (playerPropsInfo.length > 0) {
     if (filterType) {
       let filteredPlayerInfo = playerPropsInfo;
-      console.time("filter player info");
 
       if (
         filterType.marketSuspended ||
@@ -130,7 +129,6 @@ export const filterPlayerInfo = (
 
       // Update the filtered player info for the table.
       setFilteredPlayerPropsInfo([...filteredPlayerInfo]);
-      console.timeEnd("filter player info");
     } else {
       setFilteredPlayerPropsInfo([...playerPropsInfo]);
     }

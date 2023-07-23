@@ -1,7 +1,7 @@
 import * as React from "react";
 
 // Material UI Components
-import Button from "@mui/material/Button";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 
@@ -22,8 +22,6 @@ import {
   updatePlayerSuspension,
   filterPlayerInfo,
 } from "../../utils/utils";
-
-import _ from "lodash";
 
 const PlayerPropsTable: React.FC = () => {
   const [playerPropsInfo, setPlayerPropsInfo] =
@@ -78,7 +76,7 @@ const PlayerPropsTable: React.FC = () => {
       textSearchVal,
       setFilteredPlayerPropsInfo
     );
-  }, [filterType, filterPlayerInfo, playerPropsInfo, textSearchVal]);
+  }, [filterType, playerPropsInfo, textSearchVal]);
 
   const positionOptions: Option[] = [
     { label: "PG", value: "PG" },
@@ -134,6 +132,7 @@ const PlayerPropsTable: React.FC = () => {
             id="mainSearchFilter"
             label="Search..."
             variant="outlined"
+            placeholder="Search by Player or Team"
             value={textSearchVal}
             onChange={handleSearch}
           />
@@ -216,6 +215,18 @@ const PlayerPropsTable: React.FC = () => {
                   </tr>
                 );
               })}
+            {filteredPlayerPropsInfo.length === 0 && (
+              <tr>
+                <td colSpan={9}>
+                  <div className="no-results">
+                    <div>
+                      <SearchOffIcon fontSize="large" color="error" />
+                    </div>
+                    <div className="no-results-text">No results found!</div>
+                  </div>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
